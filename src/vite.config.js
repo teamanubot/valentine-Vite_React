@@ -12,7 +12,9 @@ export default defineConfig({
                 'resources/js/app-welcome.jsx',
                 'resources/js/app-loveletter-create.jsx',
                 'resources/js/app-loveletter-view.jsx',
-                'resources/css/filament/admin/theme.css'
+                'resources/css/filament/admin/theme.css',
+                'resources/js/welcome.js',
+                'resources/js/bootstrap.js',
             ],
             refresh: true,
         }),
