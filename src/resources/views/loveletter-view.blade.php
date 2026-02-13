@@ -4,6 +4,8 @@
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <title>Love Letter for {{ ucfirst($recipient) }} - {{ config('app.name', 'Laravel') }}</title>
+        <!-- Favicon -->
+        <link rel="icon" type="image/svg+xml" href="{{ asset('image/heart.svg') }}" />
         @vite(['resources/css/app.css', 'resources/js/app-loveletter-view.jsx'])
     </head>
     <body>
