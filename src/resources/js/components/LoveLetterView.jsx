@@ -10,10 +10,13 @@ function LoveLetterView({ recipientName }) {
     const [musicStarted, setMusicStarted] = useState(false)
     const [isPlaying, setIsPlaying] = useState(true)
     const [selectedImageIndex, setSelectedImageIndex] = useState(null)
+    const [currentCarouselIndex, setCurrentCarouselIndex] = useState(0)
+    const [imageAspectRatios, setImageAspectRatios] = useState({})
     const [darkMode, setDarkMode] = useState(() => {
         return localStorage.getItem('valentine-dark-mode') === 'true'
     })
     const playerRef = React.useRef(null)
+    const carouselIntervalRef = React.useRef(null)
 
     useEffect(() => {
         // Fetch data from API
@@ -51,8 +54,112 @@ function LoveLetterView({ recipientName }) {
         document.body.classList.toggle('dark-mode', darkMode)
     }, [darkMode])
 
+    // Auto-rotate carousel images
+    useEffect(() => {
+        if (letterData?.images && letterData.images.length > 1) {
+            carouselIntervalRef.current = setInterval(() => {
+                setCurrentCarouselIndex((prevIndex) => 
+                    (prevIndex + 1) % letterData.images.length
+                )
+            }, 4000) // Change image every 4 seconds
+
+            return () => {
+                if (carouselIntervalRef.current) {
+                    clearInterval(carouselIntervalRef.current)
+                }
+            }
+        }
+    }, [letterData?.images])
+
     const toggleDarkMode = () => {
         setDarkMode(!darkMode)
+    }
+
+    const nextCarouselImage = () => {
+        if (letterData?.images && letterData.images.length > 0) {
+            setCurrentCarouselIndex((prevIndex) => 
+                (prevIndex + 1) % letterData.images.length
+            )
+            // Reset auto-rotate timer
+            if (carouselIntervalRef.current) {
+                clearInterval(carouselIntervalRef.current)
+                carouselIntervalRef.current = setInterval(() => {
+                    setCurrentCarouselIndex((prevIndex) => 
+                        (prevIndex + 1) % letterData.images.length
+                    )
+                }, 4000)
+            }
+        }
+    }
+
+    const handleImageLoad = (e, index) => {
+        const img = e.target
+        const aspectRatio = img.naturalWidth / img.naturalHeight
+        setImageAspectRatios(prev => ({
+            ...prev,
+            [index]: aspectRatio
+        }))
+    }
+
+    const getCarouselHeight = () => {
+        const currentAspectRatio = imageAspectRatios[currentCarouselIndex]
+        if (!currentAspectRatio) return 'auto'
+        
+        // Calculate height based on aspect ratio
+        // Using max-width of carousel (typically viewport width - padding)
+        if (currentAspectRatio >= 2.5) {
+            // Ultra wide (21:9, 19:6, etc.)
+            return '40vh'
+        } else if (currentAspectRatio >= 1.7) {
+            // Wide landscape (16:9, 18:9, etc.)
+            return '50vh'
+        } else if (currentAspectRatio >= 1.3) {
+            // Standard landscape (4:3, 3:2, etc.)
+            return '60vh'
+        } else if (currentAspectRatio >= 0.9 && currentAspectRatio <= 1.1) {
+            // Square (1:1)
+            return '70vh'
+        } else if (currentAspectRatio >= 0.6) {
+            // Portrait (3:4, 2:3, etc.)
+            return '80vh'
+        } else {
+            // Ultra portrait (9:16, etc.)
+            return '90vh'
+        }
+    }
+
+    const getAspectRatioLabel = () => {
+        const currentAspectRatio = imageAspectRatios[currentCarouselIndex]
+        if (!currentAspectRatio) return ''
+        
+        // Common aspect ratios
+        if (Math.abs(currentAspectRatio - 16/9) < 0.1) return '16:9'
+        if (Math.abs(currentAspectRatio - 21/9) < 0.1) return '21:9'
+        if (Math.abs(currentAspectRatio - 4/3) < 0.1) return '4:3'
+        if (Math.abs(currentAspectRatio - 3/2) < 0.1) return '3:2'
+        if (Math.abs(currentAspectRatio - 1) < 0.1) return '1:1'
+        if (Math.abs(currentAspectRatio - 3/4) < 0.1) return '3:4'
+        if (Math.abs(currentAspectRatio - 9/16) < 0.1) return '9:16'
+        
+        // Return calculated ratio
+        return `${currentAspectRatio.toFixed(2)}:1`
+    }
+
+    const prevCarouselImage = () => {
+        if (letterData?.images && letterData.images.length > 0) {
+            setCurrentCarouselIndex((prevIndex) => 
+                prevIndex === 0 ? letterData.images.length - 1 : prevIndex - 1
+            )
+            // Reset auto-rotate timer
+            if (carouselIntervalRef.current) {
+                clearInterval(carouselIntervalRef.current)
+                carouselIntervalRef.current = setInterval(() => {
+                    setCurrentCarouselIndex((prevIndex) => 
+                        (prevIndex + 1) % letterData.images.length
+                    )
+                }, 4000)
+            }
+        }
     }
 
     const getYoutubeVideoId = (url) => {
@@ -599,6 +706,233 @@ function LoveLetterView({ recipientName }) {
                     z-index: 10001;
                 }
 
+                /* Carousel Styles */
+                .carousel-container {
+                    position: relative;
+                    width: 100%;
+                    margin: 2rem 0;
+                    padding: 2rem;
+                    background: linear-gradient(135deg, rgba(255, 182, 193, 0.1) 0%, rgba(255, 240, 245, 0.2) 100%);
+                    border-radius: 25px;
+                }
+
+                .dark-mode .carousel-container {
+                    background: linear-gradient(135deg, rgba(255, 107, 157, 0.05) 0%, rgba(192, 108, 132, 0.1) 100%);
+                }
+
+                .carousel-wrapper {
+                    position: relative;
+                    width: 100%;
+                    overflow: hidden;
+                    border-radius: 20px;
+                    border: 4px solid transparent;
+                    background: 
+                        linear-gradient(white, white) padding-box,
+                        linear-gradient(
+                            45deg,
+                            #ff6b9d 0%,
+                            #ffa5c0 25%,
+                            #ffb8d1 50%,
+                            #ffa5c0 75%,
+                            #ff6b9d 100%
+                        ) border-box;
+                    box-shadow: 
+                        0 8px 32px rgba(255, 107, 157, 0.2),
+                        0 0 0 8px rgba(255, 182, 193, 0.1),
+                        0 0 0 16px rgba(255, 192, 203, 0.05),
+                        inset 0 2px 8px rgba(255, 255, 255, 0.5);
+                    animation: borderGlow 3s ease-in-out infinite;
+                    transition: height 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+                }
+
+                .dark-mode .carousel-wrapper {
+                    background: 
+                        linear-gradient(rgba(45, 27, 61, 0.9), rgba(45, 27, 61, 0.9)) padding-box,
+                        linear-gradient(
+                            45deg,
+                            #ff6b9d 0%,
+                            #ff8cb3 25%,
+                            #ffa5c0 50%,
+                            #ff8cb3 75%,
+                            #ff6b9d 100%
+                        ) border-box;
+                    box-shadow: 
+                        0 8px 32px rgba(255, 107, 157, 0.4),
+                        0 0 0 8px rgba(255, 107, 157, 0.15),
+                        0 0 0 16px rgba(255, 107, 157, 0.08),
+                        inset 0 2px 8px rgba(255, 107, 157, 0.2);
+                }
+
+                @keyframes borderGlow {
+                    0%, 100% {
+                        filter: brightness(1) drop-shadow(0 0 10px rgba(255, 107, 157, 0.3));
+                    }
+                    50% {
+                        filter: brightness(1.1) drop-shadow(0 0 20px rgba(255, 107, 157, 0.5));
+                    }
+                }
+
+                .carousel-track {
+                    display: flex;
+                    transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+                    height: 100%;
+                }
+
+                .carousel-slide {
+                    min-width: 100%;
+                    position: relative;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    height: 100%;
+                }
+
+                .carousel-image {
+                    width: 100%;
+                    height: 100%;
+                    object-fit: contain;
+                    display: block;
+                    cursor: pointer;
+                    transition: transform 0.3s ease, opacity 0.3s ease;
+                }
+
+                .carousel-image:hover {
+                    transform: scale(1.02);
+                }
+
+                .carousel-nav {
+                    position: absolute;
+                    top: 50%;
+                    transform: translateY(-50%);
+                    background: linear-gradient(135deg, rgba(255, 107, 157, 0.95), rgba(192, 108, 132, 0.95));
+                    color: white;
+                    border: none;
+                    width: 50px;
+                    height: 50px;
+                    border-radius: 50%;
+                    font-size: 1.5rem;
+                    cursor: pointer;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    box-shadow: 
+                        0 5px 20px rgba(255, 107, 157, 0.4),
+                        0 0 0 3px rgba(255, 255, 255, 0.3);
+                    transition: all 0.3s ease;
+                    z-index: 10;
+                    backdrop-filter: blur(10px);
+                }
+
+                .carousel-nav:hover {
+                    transform: translateY(-50%) scale(1.15);
+                    box-shadow: 
+                        0 8px 30px rgba(255, 107, 157, 0.6),
+                        0 0 0 4px rgba(255, 255, 255, 0.5);
+                    background: linear-gradient(135deg, #ff6b9d, #d98ba6);
+                }
+
+                .carousel-nav:active {
+                    transform: translateY(-50%) scale(0.95);
+                }
+
+                .carousel-nav-prev {
+                    left: 1rem;
+                }
+
+                .carousel-nav-next {
+                    right: 1rem;
+                }
+
+                .carousel-indicators {
+                    display: flex;
+                    justify-content: center;
+                    gap: 0.75rem;
+                    margin-top: 1.5rem;
+                    padding: 1rem;
+                }
+
+                .carousel-indicator {
+                    width: 12px;
+                    height: 12px;
+                    border-radius: 50%;
+                    background: rgba(192, 108, 132, 0.3);
+                    cursor: pointer;
+                    transition: all 0.3s ease;
+                    border: 2px solid transparent;
+                    position: relative;
+                }
+
+                .carousel-indicator::before {
+                    content: '';
+                    position: absolute;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                    width: 0;
+                    height: 0;
+                    border-radius: 50%;
+                    background: #ff6b9d;
+                    transition: all 0.3s ease;
+                }
+
+                .carousel-indicator.active {
+                    background: linear-gradient(135deg, #ff6b9d, #c06c84);
+                    transform: scale(1.3);
+                    box-shadow: 0 0 10px rgba(255, 107, 157, 0.5);
+                }
+
+                .carousel-indicator.active::before {
+                    width: 20px;
+                    height: 20px;
+                    opacity: 0.3;
+                }
+
+                .carousel-indicator:hover:not(.active) {
+                    background: rgba(192, 108, 132, 0.6);
+                    transform: scale(1.15);
+                }
+
+                .dark-mode .carousel-indicator {
+                    background: rgba(255, 107, 157, 0.2);
+                }
+
+                .dark-mode .carousel-indicator.active {
+                    background: linear-gradient(135deg, #ff8cb3, #d98ba6);
+                    box-shadow: 0 0 15px rgba(255, 107, 157, 0.7);
+                }
+
+                .carousel-counter {
+                    position: absolute;
+                    top: 1rem;
+                    right: 1rem;
+                    background: linear-gradient(135deg, rgba(255, 107, 157, 0.95), rgba(192, 108, 132, 0.95));
+                    color: white;
+                    padding: 0.5rem 1rem;
+                    border-radius: 50px;
+                    font-family: 'Poppins', sans-serif;
+                    font-size: 0.9rem;
+                    font-weight: 600;
+                    box-shadow: 0 4px 15px rgba(255, 107, 157, 0.4);
+                    backdrop-filter: blur(10px);
+                    z-index: 5;
+                    border: 2px solid rgba(255, 255, 255, 0.3);
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    gap: 0.25rem;
+                }
+
+                .carousel-aspect-label {
+                    font-size: 0.7rem;
+                    opacity: 0.8;
+                    font-weight: 400;
+                }
+
+                .dark-mode .carousel-counter {
+                    background: linear-gradient(135deg, rgba(255, 107, 157, 0.9), rgba(217, 139, 166, 0.9));
+                    box-shadow: 0 4px 15px rgba(255, 107, 157, 0.6);
+                }
+
                 @media (max-width: 768px) {
                     .letter-envelope {
                         padding: 2rem 1.5rem;
@@ -608,6 +942,23 @@ function LoveLetterView({ recipientName }) {
                     }
                     .letter-message {
                         font-size: 1.1rem;
+                    }
+                    .carousel-container {
+                        padding: 1rem;
+                    }
+                    .carousel-wrapper {
+                        min-height: 300px;
+                    }
+                    .carousel-nav {
+                        width: 40px;
+                        height: 40px;
+                        font-size: 1.2rem;
+                    }
+                    .carousel-nav-prev {
+                        left: 0.5rem;
+                    }
+                    .carousel-nav-next {
+                        right: 0.5rem;
                     }
                     .lightbox-prev,
                     .lightbox-next {
@@ -704,21 +1055,86 @@ function LoveLetterView({ recipientName }) {
                         )}
 
                         {letterData.images && letterData.images.length > 0 && (
-                            <div className="images-gallery mb-4">
-                                <div className="row g-3">
-                                    {letterData.images.map((imageUrl, index) => (
-                                        <div key={index} className={letterData.images.length === 1 ? 'col-12' : 'col-md-6'}>
-                                            <img 
-                                                src={imageUrl} 
-                                                alt={`Romantic ${index + 1}`} 
-                                                className="letter-image"
-                                                onClick={() => openLightbox(index)}
-                                                style={{ cursor: 'pointer' }}
-                                                onError={(e) => e.target.style.display = 'none'}
-                                            />
-                                        </div>
-                                    ))}
+                            <div className="carousel-container">
+                                <div 
+                                    className="carousel-wrapper"
+                                    style={{
+                                        height: getCarouselHeight(),
+                                        minHeight: '300px',
+                                        maxHeight: '90vh'
+                                    }}
+                                >
+                                    <div 
+                                        className="carousel-track"
+                                        style={{
+                                            transform: `translateX(-${currentCarouselIndex * 100}%)`
+                                        }}
+                                    >
+                                        {letterData.images.map((imageUrl, index) => (
+                                            <div key={index} className="carousel-slide">
+                                                <img 
+                                                    src={imageUrl} 
+                                                    alt={`Romantic ${index + 1}`} 
+                                                    className="carousel-image"
+                                                    onClick={() => openLightbox(index)}
+                                                    onLoad={(e) => handleImageLoad(e, index)}
+                                                    onError={(e) => e.target.style.display = 'none'}
+                                                />
+                                            </div>
+                                        ))}
+                                    </div>
+
+                                    {letterData.images.length > 1 && (
+                                        <>
+                                            <button 
+                                                className="carousel-nav carousel-nav-prev"
+                                                onClick={prevCarouselImage}
+                                                aria-label="Previous Image"
+                                            >
+                                                <i className="bi bi-chevron-left"></i>
+                                            </button>
+                                            <button 
+                                                className="carousel-nav carousel-nav-next"
+                                                onClick={nextCarouselImage}
+                                                aria-label="Next Image"
+                                            >
+                                                <i className="bi bi-chevron-right"></i>
+                                            </button>
+
+                                            <div className="carousel-counter">
+                                                <div>{currentCarouselIndex + 1} / {letterData.images.length}</div>
+                                                {imageAspectRatios[currentCarouselIndex] && (
+                                                    <div className="carousel-aspect-label">
+                                                        {getAspectRatioLabel()}
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </>
+                                    )}
                                 </div>
+
+                                {letterData.images.length > 1 && (
+                                    <div className="carousel-indicators">
+                                        {letterData.images.map((_, index) => (
+                                            <div
+                                                key={index}
+                                                className={`carousel-indicator ${index === currentCarouselIndex ? 'active' : ''}`}
+                                                onClick={() => {
+                                                    setCurrentCarouselIndex(index)
+                                                    // Reset auto-rotate timer
+                                                    if (carouselIntervalRef.current) {
+                                                        clearInterval(carouselIntervalRef.current)
+                                                        carouselIntervalRef.current = setInterval(() => {
+                                                            setCurrentCarouselIndex((prevIndex) => 
+                                                                (prevIndex + 1) % letterData.images.length
+                                                            )
+                                                        }, 4000)
+                                                    }
+                                                }}
+                                            />
+                                        ))}
+                                    </div>
+                                )}
                             </div>
                         )}
 
@@ -781,13 +1197,15 @@ function LoveLetterView({ recipientName }) {
                 )}
 
                 {/* Dark Mode Toggle */}
-                <button 
-                    className="dark-mode-toggle"
-                    onClick={toggleDarkMode}
-                    title={darkMode ? "Light Mode" : "Dark Mode"}
-                >
-                    <i className={`bi ${darkMode ? 'bi-sun-fill' : 'bi-moon-stars-fill'}`}></i>
-                </button>
+                {(!letterData?.youtubeUrl || musicStarted) && (
+                    <button 
+                        className="dark-mode-toggle"
+                        onClick={toggleDarkMode}
+                        title={darkMode ? "Light Mode" : "Dark Mode"}
+                    >
+                        <i className={`bi ${darkMode ? 'bi-sun-fill' : 'bi-moon-stars-fill'}`}></i>
+                    </button>
+                )}
             </div>
         </>
     )
