@@ -1,0 +1,567 @@
+@import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Playfair+Display:wght@400;600;700&family=Poppins:wght@300;400;500;600&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    overflow-x: hidden;
+}
+
+.valentine-container {
+    position: relative;
+    background: linear-gradient(135deg, #ffeef8 0%, #fff5f7 50%, #ffe8f0 100%);
+    min-height: 100vh;
+    overflow: hidden;
+}
+
+.floating-hearts {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.heart {
+    position: absolute;
+    bottom: -50px;
+    font-size: 20px;
+    color: rgba(255, 107, 157, 0.3);
+    animation: float-up linear infinite;
+}
+
+@keyframes float-up {
+    0% {
+        bottom: -50px;
+        opacity: 0;
+        transform: translateX(0) rotate(0deg);
+    }
+    10% {
+        opacity: 0.8;
+    }
+    90% {
+        opacity: 0.8;
+    }
+    100% {
+        bottom: 110vh;
+        opacity: 0;
+        transform: translateX(50px) rotate(360deg);
+    }
+}
+
+.content-wrapper {
+    position: relative;
+    z-index: 2;
+}
+
+.hero-section {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 2rem;
+}
+
+.hero-content h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 4.5rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, #ff6b9d 0%, #c06c84 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 1.5rem;
+    animation: fadeInDown 1s ease-out;
+}
+
+.hero-subtitle {
+    font-family: 'Dancing Script', cursive;
+    font-size: 2rem;
+    color: #c06c84;
+    margin-bottom: 2rem;
+    animation: fadeInUp 1s ease-out 0.3s both;
+}
+
+.hero-description {
+    font-size: 1.1rem;
+    color: #666;
+    max-width: 600px;
+    margin: 0 auto 3rem;
+    line-height: 1.8;
+    animation: fadeInUp 1s ease-out 0.6s both;
+}
+
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.countdown-section {
+    background: linear-gradient(135deg, rgba(255, 107, 157, 0.1), rgba(192, 108, 132, 0.1));
+    border-radius: 20px;
+    padding: 2rem;
+    margin: 0 auto 3rem;
+    max-width: 700px;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 8px 32px rgba(255, 107, 157, 0.1);
+}
+
+.countdown-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    color: #c06c84;
+    margin-bottom: 1.5rem;
+}
+
+.countdown-timer {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.countdown-item {
+    background: white;
+    border-radius: 15px;
+    padding: 1.5rem 2rem;
+    min-width: 100px;
+    box-shadow: 0 4px 15px rgba(255, 107, 157, 0.15);
+    transition: transform 0.3s ease;
+}
+
+.countdown-item:hover {
+    transform: translateY(-5px);
+}
+
+.countdown-value {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #ff6b9d;
+    display: block;
+}
+
+.countdown-label {
+    font-size: 0.9rem;
+    color: #999;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.quotes-section {
+    padding: 5rem 0;
+    background: white;
+}
+
+.section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 3rem;
+    text-align: center;
+    color: #c06c84;
+    margin-bottom: 3rem;
+}
+
+.quote-card {
+    background: linear-gradient(135deg, #fff5f7, #ffeef8);
+    border: none;
+    border-radius: 20px;
+    padding: 2.5rem;
+    height: 100%;
+    box-shadow: 0 10px 30px rgba(255, 107, 157, 0.1);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.quote-card::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.5), transparent);
+    transform: rotate(45deg);
+    transition: all 0.5s ease;
+}
+
+.quote-card:hover::before {
+    left: 100%;
+}
+
+.quote-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 40px rgba(255, 107, 157, 0.2);
+}
+
+.quote-icon {
+    font-size: 3rem;
+    color: #ff6b9d;
+    margin-bottom: 1.5rem;
+}
+
+.quote-text {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem;
+    color: #555;
+    font-style: italic;
+    margin-bottom: 1rem;
+    line-height: 1.8;
+}
+
+.quote-author {
+    color: #c06c84;
+    font-weight: 600;
+    text-align: right;
+}
+
+.ideas-section {
+    padding: 5rem 0;
+    background: linear-gradient(180deg, #ffeef8 0%, #fff5f7 100%);
+}
+
+.idea-card {
+    background: white;
+    border-radius: 20px;
+    padding: 2rem;
+    text-align: center;
+    height: 100%;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+}
+
+.idea-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 40px rgba(255, 107, 157, 0.2);
+    border-color: #ff6b9d;
+}
+
+.idea-icon {
+    font-size: 3.5rem;
+    margin-bottom: 1.5rem;
+    display: inline-block;
+    animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+}
+
+.idea-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    color: #333;
+    margin-bottom: 1rem;
+    font-weight: 600;
+}
+
+.idea-description {
+    color: #666;
+    line-height: 1.6;
+}
+
+.footer {
+    background: linear-gradient(135deg, #c06c84, #ff6b9d);
+    color: white;
+    padding: 3rem 0;
+    text-align: center;
+}
+
+.footer-heart {
+    font-size: 2rem;
+    animation: heartbeat 1.5s ease-in-out infinite;
+}
+
+@keyframes heartbeat {
+    0%, 100% {
+        transform: scale(1);
+    }
+    10%, 30% {
+        transform: scale(1.1);
+    }
+    20%, 40% {
+        transform: scale(1);
+    }
+}
+
+.footer-text {
+    font-family: 'Dancing Script', cursive;
+    font-size: 1.5rem;
+    margin: 1rem 0;
+}
+
+@media (max-width: 768px) {
+    .hero-content h1 {
+        font-size: 2.5rem;
+    }
+    .hero-subtitle {
+        font-size: 1.5rem;
+    }
+    .section-title {
+        font-size: 2rem;
+    }
+    .countdown-item {
+        min-width: 80px;
+        padding: 1rem 1.5rem;
+    }
+    .countdown-value {
+        font-size: 2rem;
+    }
+}
+
+/* Dark Mode Styles */
+.dark-mode-toggle {
+    position: fixed;
+    bottom: 2rem;
+    left: 2rem;
+    background: linear-gradient(135deg, #ff6b9d, #c06c84);
+    color: white;
+    border: none;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    font-size: 1.5rem;
+    cursor: pointer;
+    box-shadow: 0 10px 30px rgba(255, 107, 157, 0.4);
+    z-index: 9999;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.dark-mode-toggle:hover {
+    transform: scale(1.1) rotate(15deg);
+    box-shadow: 0 15px 40px rgba(255, 107, 157, 0.6);
+}
+
+.dark-mode-toggle i {
+    font-size: 1.5rem;
+}
+
+/* Dark Mode Container Styling */
+.valentine-container.dark-mode {
+    background: linear-gradient(135deg, #1a0a1e 0%, #2d1b3d 50%, #3d1e3f 100%);
+}
+
+.love-letter-container.dark-mode {
+    background: linear-gradient(135deg, #1a0a1e 0%, #2d1b3d 50%, #3d1e3f 100%);
+}
+
+.love-letter-create-page.dark-mode {
+    background: linear-gradient(135deg, #1a0a1e 0%, #2d1b3d 50%, #3d1e3f 100%) !important;
+}
+
+/* Dark Mode: Hero Section */
+.dark-mode .hero-content h1 {
+    background: linear-gradient(135deg, #ff8cb3 0%, #d98ba6 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.dark-mode .hero-subtitle {
+    color: #ff8cb3;
+}
+
+.dark-mode .hero-description {
+    color: #d1b3c4;
+}
+
+/* Dark Mode: Countdown */
+.dark-mode .countdown-section {
+    background: linear-gradient(135deg, rgba(255, 107, 157, 0.15), rgba(192, 108, 132, 0.15));
+    box-shadow: 0 8px 32px rgba(255, 107, 157, 0.2);
+}
+
+.dark-mode .countdown-title {
+    color: #ff8cb3;
+}
+
+.dark-mode .countdown-item {
+    background: rgba(45, 27, 61, 0.8);
+    border: 1px solid rgba(255, 107, 157, 0.3);
+    box-shadow: 0 4px 15px rgba(255, 107, 157, 0.25);
+}
+
+.dark-mode .countdown-value {
+    color: #ff8cb3;
+}
+
+.dark-mode .countdown-label {
+    color: #d1b3c4;
+}
+
+/* Dark Mode: Quote Section */
+.dark-mode .quotes-section {
+    background: #1a0a1e;
+}
+
+.dark-mode .section-title {
+    color: #ff8cb3;
+}
+
+.dark-mode .quote-card {
+    background: linear-gradient(135deg, #2d1b3d, #3d1e3f);
+    border: 1px solid rgba(255, 107, 157, 0.2);
+    box-shadow: 0 10px 30px rgba(255, 107, 157, 0.2);
+}
+
+.dark-mode .quote-icon {
+    color: #ff8cb3;
+}
+
+.dark-mode .quote-text {
+    color: #d1b3c4;
+}
+
+.dark-mode .quote-author {
+    color: #ff8cb3;
+}
+
+/* Dark Mode: Ideas Section */
+.dark-mode .ideas-section {
+    background: linear-gradient(180deg, #1a0a1e 0%, #2d1b3d 100%);
+}
+
+.dark-mode .idea-card {
+    background: rgba(45, 27, 61, 0.6);
+    border: 1px solid rgba(255, 107, 157, 0.2);
+    box-shadow: 0 10px 30px rgba(255, 107, 157, 0.15);
+}
+
+.dark-mode .idea-card:hover {
+    background: rgba(45, 27, 61, 0.9);
+    border-color: #ff8cb3;
+    box-shadow: 0 15px 40px rgba(255, 107, 157, 0.3);
+}
+
+.dark-mode .idea-title {
+    color: #ff8cb3;
+}
+
+.dark-mode .idea-description {
+    color: #d1b3c4;
+}
+
+/* Dark Mode: Footer */
+.dark-mode .footer {
+    background: linear-gradient(135deg, #3d1e3f, #2d1b3d);
+    border-top: 1px solid rgba(255, 107, 157, 0.3);
+}
+
+/* Dark Mode: Love Letter View */
+.dark-mode .letter-envelope {
+    background: rgba(45, 27, 61, 0.9) !important;
+    border: 1px solid rgba(255, 107, 157, 0.3);
+    box-shadow: 0 30px 80px rgba(255, 107, 157, 0.3) !important;
+}
+
+.dark-mode .letter-header {
+    border-bottom: 2px solid rgba(255, 107, 157, 0.3) !important;
+}
+
+.dark-mode .letter-to {
+    color: #ff8cb3 !important;
+}
+
+.dark-mode .letter-from {
+    color: #d98ba6 !important;
+}
+
+.dark-mode .letter-message {
+    color: #d1b3c4 !important;
+}
+
+.dark-mode .signature-text {
+    color: #ff8cb3 !important;
+}
+
+.dark-mode .back-button {
+    background: rgba(45, 27, 61, 0.9) !important;
+    color: #ff8cb3 !important;
+    border: 1px solid rgba(255, 107, 157, 0.3);
+}
+
+.dark-mode .back-button:hover {
+    color: #ffa4c6 !important;
+    background: rgba(61, 30, 63, 0.9) !important;
+}
+
+/* Dark Mode: Love Letter Create */
+.dark-mode .letter-form-container {
+    background: rgba(45, 27, 61, 0.9) !important;
+    border: 1px solid rgba(255, 107, 157, 0.3) !important;
+    box-shadow: 0 30px 80px rgba(255, 107, 157, 0.3) !important;
+}
+
+.dark-mode .form-label {
+    color: #ff8cb3 !important;
+}
+
+.dark-mode .form-control,
+.dark-mode .form-control:focus {
+    background: rgba(26, 10, 30, 0.6) !important;
+    border-color: rgba(255, 107, 157, 0.3) !important;
+    color: #d1b3c4 !important;
+}
+
+.dark-mode .form-control::placeholder {
+    color: rgba(209, 179, 196, 0.5) !important;
+}
+
+.dark-mode .preview-item {
+    background: rgba(26, 10, 30, 0.6) !important;
+    border-color: rgba(255, 107, 157, 0.3) !important;
+}
+
+.dark-mode .btn-remove {
+    background: rgba(255, 107, 157, 0.8) !important;
+}
+
+.dark-mode .music-overlay {
+    background: rgba(26, 10, 30, 0.95) !important;
+}
+
+.dark-mode .lightbox-overlay {
+    background: rgba(0, 0, 0, 0.98) !important;
+}
+
+@media (max-width: 768px) {
+    .dark-mode-toggle {
+        width: 50px;
+        height: 50px;
+        font-size: 1.2rem;
+        bottom: 1rem;
+        left: 1rem;
+    }
+}
